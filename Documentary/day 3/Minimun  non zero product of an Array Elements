@@ -1,0 +1,23 @@
+#include <iostream>
+
+class Solution {
+public:
+    int minNonZeroProduct(int p) {
+        long long mod = 1e9 + 7;
+        long long maxNum = (1LL << p) - 1;
+        long long minProduct = maxNum;
+
+        for (long long i = 1; i < maxNum; i <<= 1) {
+            minProduct = (minProduct * (maxNum - i)) % mod;
+        }
+
+        return minProduct;
+    }
+};
+
+int main() {
+    Solution solution;
+    int p = 3;
+    std::cout << solution.minNonZeroProduct(p) << std::endl;
+    return 0;
+}

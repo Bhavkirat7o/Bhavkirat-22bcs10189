@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+
+class Solution {
+public:
+    int dp[100][100];
+
+    int maxScore(std::vector<int>& nums, int left, int right) {
+        if (left == right) return nums[left];
+        if (dp[left][right] != -1) return dp[left][right];
+        int pickLeft = nums[left] - maxScore(nums, left + 1, right);
+        int pickRight = nums[right] - maxScore(nums, left, right - 1);
+        return dp[left][right] = std::max(pickLeft, pickRight);
+    }
+
+    std::string predictTheWinner(std::vector<int>& nums) {
+        int n = nums.size();
+        memset(dp, -1, sizeof(dp));
+        return maxScore(nums, 0, n - 1) >= 0 ? "Player 1" : "Player 2";
+    }
+};
+
+int main() {
+    Solution solution;
+    std::vector<int> nums = {1, 5, 2};
+    std::cout << solution.predictTheWinner(nums) << std::endl;
+    return 0;
+}

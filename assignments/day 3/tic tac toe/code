@@ -1,0 +1,80 @@
+#include <iostream>
+using namespace std;
+
+void drawBoard(char board[3][3], int winRow = -1, int winCol = -1, bool isDiagonal1 = false, bool isDiagonal2 = false) {
+    cout << "-------------\n";
+    for (int i = 0; i < 3; i++) {
+        cout << "| ";
+        for (int j = 0; j < 3; j++) {
+            if ((i == winRow) || (j == winCol) || (isDiagonal1 && i == j) || (isDiagonal2 && i + j == 2)) {
+                cout << "\033[1;31m" << board[i][j] << "\033[0m";
+            } else {
+                cout << board[i][j];
+            }
+            cout << " | ";
+        }
+        cout << "\n-------------\n";
+    }
+}
+
+bool checkWin(char board[3][3], char player, int &winRow, int &winCol, bool &isDiagonal1, bool &isDiagonal2) {
+    for (int i = 0; i < 3; i++) {
+        if (board[i][0] == player && board[i][1] == player && board[i][2] == player) {
+            winRow = i; winCol = -1; isDiagonal1 = false; isDiagonal2 = false;
+            return true;
+        }
+        if (board[0][i] == player && board[1][i] == player && board[2][i] == player) {
+            winRow = -1; winCol = i; isDiagonal1 = false; isDiagonal2 = false;
+            return true;
+        }
+    }
+    if (board[0][0] == player && board[1][1] == player && board[2][2] == player) {
+        winRow = -1; winCol = -1; isDiagonal1 = true; isDiagonal2 = false;
+        return true;
+    }
+    if (board[0][2] == player && board[1][1] == player && board[2][0] == player) {
+        winRow = -1; winCol = -1; isDiagonal1 = false; isDiagonal2 = true;
+        return true;
+    }
+    return false;
+}
+
+int main() {
+    char board[3][3] = { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
+    char player = 'X';
+    int row, col;
+    int turn;
+
+    cout << "Welcome to Tic-Tac-Toe!\n";
+
+    for (turn = 0; turn < 9; turn++) {
+        drawBoard(board);
+        while (true) {
+            cout << "Player " << player << ", enter row (1-3) and column (1-3): ";
+            cin >> row >> col;
+            row--; col--;
+            if (board[row][col] != ' ' || row < 0 || row > 2 || col < 0 || col > 2) {
+                cout << "Invalid move. Try again.\n";
+            } else {
+                break;
+            }
+        }
+        board[row][col] = player;
+
+        int winRow = -1, winCol = -1;
+        bool isDiagonal1 = false, isDiagonal2 = false;
+        if (checkWin(board, player, winRow, winCol, isDiagonal1, isDiagonal2)) {
+            drawBoard(board, winRow, winCol, isDiagonal1, isDiagonal2);
+            cout << "Player " << player << " wins!\n";
+            break;
+        }
+        player = (player == 'X') ? 'O' : 'X';
+    }
+
+    if (turn == 9) {
+        drawBoard(board);
+        cout << "It's a draw!\n";
+    }
+
+    return 0;
+}
